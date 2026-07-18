@@ -20,10 +20,10 @@ class CashRegister:
             print("Not valid discount")
 
     def add_item(self, item, price, quantity=1):
-        """Add an item to the register."""
+        # Update total
         self.total += price * quantity
 
-        # Add one entry per quantity
+        # Add one item for each quantity
         self.items.extend([item] * quantity)
 
         # Save the transaction
@@ -34,23 +34,30 @@ class CashRegister:
         })
 
     def apply_discount(self):
-        """Apply the discount to the total."""
         if self.discount == 0:
             print("There is no discount to apply.")
             return
 
-        self.total -= self.total * (self.discount / 100)
+        # Apply the discount
+        self.total = self.total - (self.total * self.discount / 100)
+
+        # Print the success message expected by the tests
+        if self.total == int(self.total):
+            amount = int(self.total)
+        else:
+            amount = self.total
+
+        print(f"After the discount, the total comes to ${amount}.")
 
     def void_last_transaction(self):
-        """Remove the last transaction."""
         if not self.previous_transactions:
             return
 
         last = self.previous_transactions.pop()
 
-        # Remove the transaction amount
+        # Remove the value of the last transaction
         self.total -= last["price"] * last["quantity"]
 
-        # Remove the items from the items list
+        # Remove each occurrence of the item
         for _ in range(last["quantity"]):
             self.items.remove(last["item"])
